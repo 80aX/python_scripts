@@ -4,4 +4,4 @@ def WaitConnection(WaitTime):
     while not Connected():
         Wait(1000)
     Wait(WaitTime)
-	return
+    return
