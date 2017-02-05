@@ -65,8 +65,6 @@ def CheckPoison():
     else:
         AddToSystemJournal('Character has been poisoned.')
         UOSay('.guards')
-        if FindType(0x0DD6 , Backpack()) > 0:
-            UseObject(FindItem())
         WaitLag(WaitTime, LagTime)
         return
 
@@ -77,8 +75,6 @@ def CheckHPLevel():
     else:
         AddToSystemJournal('Low HP level, probably character has been attacked.')
         UOSay('.guards')
-        if FindType(0x0F0C , Backpack()) > 0:
-            UseObject(FindItem())
         WaitLag(WaitTime, LagTime)
         return
 
