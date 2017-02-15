@@ -1,7 +1,7 @@
 # скрипт на таминг - киллинг, чар стоит на месте(на респе животного) тамит и убивает
 # животных заданного типа. Хавает фишстейки, проверяет количество стрел в паке, пишет
 # всякую инфу в системный журнал. Качает трекинг если животных нету.
-# v0.2 made by 80aX for ZHR
+# v0.4 made by 80aX for ZHR
 
 from all import *
 
@@ -42,7 +42,7 @@ def CheckDead():
 
 
 def CheckDanger():
-    SetFindDistance(10)
+    SetFindDistance(14)
     for DangerColor in range(4, 7):
         if FindNotoriety(-1, DangerColor) > 0:
             AddToSystemJournal('Danger! Enemy detected.')
@@ -86,7 +86,7 @@ def CheckStates():
 
 def KillAnimal(AnimalToKill):
     SetWarMode(True)
-    while GetHP(AnimalToKill) > 0:
+    while GetHP(AnimalToKill) > 0 and CheckWeapon() == True:
         Attack(AnimalToKill)
         WaitLag(WaitTime * 2, WaitLagTime)
     SetWarMode(False)
@@ -123,7 +123,7 @@ def Tracking():
 
 
 def CheckAnimal():
-    SetFindDistance(12)
+    SetFindDistance(14)
     FindType(AnimalType, Ground())
     if FindCount() > 0:
         return True
@@ -137,15 +137,17 @@ def CheckWeapon():
     FindType(ArrowsType, Backpack())
     AddToSystemJournal('Arrows left: {0}'.format(FindFullQuantity()))
     if FindFullQuantity() == 0:
-        AddToSystemJournal('Could not find arrows in backpack. Disconnecting')
-        FullDisconnect()
+        AddToSystemJournal('Could not find arrows in backpack.')
+        WaitLag(WaitTime, WaitLagTime)
+        return False
     if not ObjAtLayer(RhandLayer()):
         if FindType(BowType, Backpack()) > 0:
             Equip(RhandLayer(), FindItem())
             WaitLag(WaitTime, WaitLagTime)
         else:
-            AddToSystemJournal('Could not find a bow in backpack. Disconnecting')
-            FullDisconnect()
+            AddToSystemJournal('Could not find a bow in backpack.')
+            WaitLag(WaitTime, WaitLagTime)
+            return False
     return True
 
 
@@ -160,15 +162,13 @@ def main():
         WaitLag(WaitTime, WaitLagTime)
         for i in range(100):
             CheckStates()
-            CheckWeapon()
             CancelTarget()
-            if CheckAnimal() == False:
+            if CheckWeapon() == False or CheckAnimal() == False:
                 Tracking()
                 continue
             CurrentAnimal = FindType(AnimalType, Ground())
-            WaitLag(WaitTime, WaitLagTime)
-            if Taming(CurrentAnimal) == True:
-                KillAnimal(CurrentAnimal)
+            Taming(CurrentAnimal)
+            KillAnimal(CurrentAnimal)
     return
 
 
