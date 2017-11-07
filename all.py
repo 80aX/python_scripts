@@ -11,7 +11,7 @@ def Hungry():
         AddToSystemJournal("Cannot check hungry state, character is not connected or dead.")
         return 0
 
-    State = [
+    state = [
         'You are absolutely stuffed!',
         'You are stuffed',
         'hungry at all',
@@ -32,8 +32,8 @@ def Hungry():
     UOSay('.hungry')
     
     if (WaitJournalLine(ctime, '|'.join(state), 10000)):
-        for i in range(2, len(State)):
-            if InJournalBetweenTimes(State[i], ctime, datetime.now()) > 0:
+        for i in range(2, len(state)):
+            if InJournalBetweenTimes(state[i], ctime, datetime.now()) > 0:
                 pcstoeat = i - 1;
                 break
     else:
